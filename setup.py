@@ -8,7 +8,7 @@ setup(
     author='Rocky Burt',
     author_email='rocky@serverzen.com',
     description='A reStructuredText parser plugin for Rezine',
-    long_description='',
+    long_description=open('README').read() + '\n\n' + open('CHANGES').read(),
     zip_safe=False,
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
