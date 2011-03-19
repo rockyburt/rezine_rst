@@ -59,20 +59,29 @@ from pygments import highlight
 from pygments.lexers import get_lexer_by_name, TextLexer
 
 
-def pygments_directive(name, arguments, options, content, lineno,
-                       content_offset, block_text, state, state_machine):
-    try:
-        lexer = get_lexer_by_name(arguments[0])
-    except ValueError:
-        # no lexer found - use the text one instead of an exception
-        lexer = TextLexer()
-    # take an arbitrary option if more than one is given
-    formatter = options and VARIANTS[options.keys()[0]] or DEFAULT
-    parsed = highlight(u'\n'.join(content), lexer, formatter)
-    return [nodes.raw('', parsed, format='html')]
+class Directive(object):
+    arguments = (1, 0, 1)
+    content = 1
+    options = dict([(key, directives.flag) for key in VARIANTS])
 
-pygments_directive.arguments = (1, 0, 1)
-pygments_directive.content = 1
-pygments_directive.options = dict([(key, directives.flag) for key in VARIANTS])
+    def __calll__(self, name, arguments, options, content, lineno,
+                  content_offset, block_text, state, state_machine):
+        try:
+            lexer = get_lexer_by_name(arguments[0])
+        except ValueError:
+            # no lexer found - use the text one instead of an exception
+            lexer = TextLexer()
+        # take an arbitrary option if more than one is given
+        formatter = options and VARIANTS[options.keys()[0]] or DEFAULT
+        parsed = highlight(u'\n'.join(content), lexer, formatter)
+        return [nodes.raw('', parsed, format='html')]
 
-directives.register_directive('sourcecode', pygments_directive)
+
+class DirectiveProvider(object):
+
+    directives = staticmethod(directives)
+
+    def register(self):
+        self.directives.register_directive('sourcecode', Directive())
+
+register = DirectiveProvider().register
