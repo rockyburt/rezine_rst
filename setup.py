@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='rezine_rst',
-    version='0.1',
+    version='0.1.1',
     url='https://github.com/rockyburt/rezine_rst',
     license='BSD',
     author='Rocky Burt',
